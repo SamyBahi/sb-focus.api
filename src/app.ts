@@ -6,28 +6,24 @@ import authRoutes from "./routes/auth";
 import tasksRoutes from "./routes/tasks";
 import listsRoutes from "./routes/lists";
 import groupsRoutes from "./routes/group";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 //cors
-app.use(
-  (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET, POST, PUT, PATCH, DELETE"
-    );
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization"
-    );
-    next();
-  }
-);
+app.use(cors({ origin: true, credentials: true }));
+
+//routes
+app.use("/auth", authRoutes);
+app.use("/tasks", tasksRoutes);
+app.use("/lists", listsRoutes);
+app.use("/groups", groupsRoutes);
 
 //error
 app.use(
@@ -39,15 +35,9 @@ app.use(
   ) => {
     console.log(error);
     const message = error.message;
-    res.json({ message: message });
+    return res.json({ message: message });
   }
 );
-
-//routes
-app.use("/auth", authRoutes);
-app.use("/tasks", tasksRoutes);
-app.use("/lists", listsRoutes);
-app.use("/groups", groupsRoutes);
 
 //db
 mongoose

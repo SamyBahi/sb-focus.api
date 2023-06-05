@@ -1,5 +1,5 @@
 import express from "express";
-import isAuth from "../utils/is-auth";
+import isAuth from "../middleware/is-auth";
 import { check } from "express-validator";
 
 import {

@@ -1,4 +1,4 @@
-import { catchError } from "./error";
+import { catchError } from "../utils/error";
 import express from "express";
 import jwt from "jsonwebtoken";
 
@@ -9,17 +9,16 @@ const isAuth = (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const authHeader = req.get("Authorization");
-  if (!authHeader) {
-    const error = new Error("Not authenticated");
+  const token = req.cookies.jwt;
+  if (!token) {
+    const error = new Error("Not authenticated, no token.");
     res.status(401);
     throw error;
   }
-  const token = req.get("Authorization").split(" ")[1];
   try {
     const decodedToken = jwt.verify(token, JWT_SECRET);
     if (!decodedToken) {
-      const error = new Error("Not authenticated.");
+      const error = new Error("Not authenticated, invalid token.");
       res.status(401);
       throw error;
     }

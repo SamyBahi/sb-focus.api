@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction } from "express";
 import { catchError, validateInput } from "../utils/error";
 import User from "../models/User";
 import bcrypt from "bcryptjs";
@@ -13,9 +13,7 @@ export const signupController = async (
 ) => {
   try {
     validateInput(req, res, next);
-    const email = req.body.email;
-    const name = req.body.name;
-    const password = req.body.password;
+    const { email, name, password } = req.body;
     const hashedPw = await bcrypt.hash(password, 12);
     const user = new User({
       email,
@@ -38,17 +36,10 @@ export const loginController = async (
 ) => {
   try {
     validateInput(req, res, next);
-    const email = req.body.email;
-    const password = req.body.password;
+    const { email, password } = req.body;
     const user = await User.findOne({ email: email });
-    if (!user) {
-      const error = new Error("Email doesn't exists.");
-      res.status(401);
-      throw error;
-    }
-    const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) {
-      const error = new Error("Wrong password.");
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      const error = new Error("Invalid email or password.");
       res.status(401);
       throw error;
     }
@@ -57,14 +48,35 @@ export const loginController = async (
         userId: user._id.toString(),
       },
       JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "1d" }
     );
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
     res.status(200).json({
       message: "Successfully logged in.",
-      token,
-      userId: user._id.toString(),
+      user: {
+        _id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+      },
     });
   } catch (err) {
     catchError(err, res, next);
   }
+};
+
+export const logoutController = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  res.status(200).json({ message: "User logged out" });
 };

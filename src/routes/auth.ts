@@ -1,7 +1,12 @@
 import express from "express";
 import { check } from "express-validator";
 import User from "../models/User";
-import { loginController, signupController } from "../controllers/auth";
+import {
+  loginController,
+  logoutController,
+  signupController,
+} from "../controllers/auth";
+import isAuth from "../middleware/is-auth";
 
 const router = express.Router();
 
@@ -25,5 +30,7 @@ router.post(
 );
 
 router.post("/login", [check("email").trim().isEmail()], loginController);
+
+router.post("/logout", isAuth, logoutController);
 
 export default router;

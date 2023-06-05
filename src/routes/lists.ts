@@ -1,6 +1,6 @@
 import express from "express";
 import { check } from "express-validator";
-import isAuth from "../utils/is-auth";
+import isAuth from "../middleware/is-auth";
 import {
   deleteListController,
   getListsController,
