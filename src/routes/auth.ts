@@ -22,14 +22,20 @@ router.post(
           return Promise.reject("E-mail already used.");
         }
       })
+      .withMessage("Please enter a valid E-mail.")
       .normalizeEmail(),
+
     check("name").trim().notEmpty().isAlphanumeric(),
     check("password").trim().notEmpty().isString().isLength({ min: 6 }),
   ],
   signupController
 );
 
-router.post("/login", [check("email").trim().isEmail()], loginController);
+router.post(
+  "/login",
+  [check("email").trim().isEmail().withMessage("Please enter a valid E-mail.")],
+  loginController
+);
 
 router.post("/logout", isAuth, logoutController);
 
