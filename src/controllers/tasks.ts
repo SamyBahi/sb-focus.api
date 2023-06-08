@@ -14,26 +14,27 @@ export const postTaskController = async (
     const dueDate = req.body.dueDate;
     const myDay = req.body.myDay;
     const listId = req.body.listId;
+    const important = req.body.important;
     console.log(dueDate);
     console.log(title);
     const task = new Task({
       title,
       myDay: myDay ? myDay : false,
       ...(listId && { listId }),
-      important: false,
+      important: important ? important : false,
       completed: false,
       index: 1,
       userId: (<any>req).userId,
       ...(dueDate && { dueDate }),
     });
     await task.save();
-    res.status(201).json({ message: "Successfully added task" });
+    res.status(201).json({ message: "Successfully added task", task });
   } catch (err) {
     catchError(err, res, next);
   }
 };
 
-export const getTasksController = async (
+export const getMyDayTasksController = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
@@ -41,8 +42,65 @@ export const getTasksController = async (
   try {
     const tasks = await Task.find({
       userId: (<any>req).userId,
+      myDay: true,
     });
-    res.status(200).json({ message: "Successfully fetched tasks.", tasks });
+    res
+      .status(200)
+      .json({ message: "Successfully fetched myday tasks.", tasks });
+  } catch (err) {
+    catchError(err, res, next);
+  }
+};
+
+export const getImportantTasksController = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    const tasks = await Task.find({
+      userId: (<any>req).userId,
+      important: true,
+    });
+    res
+      .status(200)
+      .json({ message: "Successfully fetched important tasks.", tasks });
+  } catch (err) {
+    catchError(err, res, next);
+  }
+};
+
+export const getPlannedTasksController = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    const tasks = await Task.find({
+      userId: (<any>req).userId,
+      $or: [{ dueDate: { $exists: true } }, { dueDate: { $ne: null } }],
+    });
+    res
+      .status(200)
+      .json({ message: "Successfully fetched important tasks.", tasks });
+  } catch (err) {
+    catchError(err, res, next);
+  }
+};
+
+export const getInboxTasksController = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    const tasks = await Task.find({
+      userId: (<any>req).userId,
+      $or: [{ listId: { $exists: false } }, { listId: null }],
+    });
+    res
+      .status(200)
+      .json({ message: "Successfully fetched important tasks.", tasks });
   } catch (err) {
     catchError(err, res, next);
   }

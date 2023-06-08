@@ -4,8 +4,11 @@ import { check } from "express-validator";
 
 import {
   deleteTaskController,
+  getImportantTasksController,
+  getInboxTasksController,
+  getMyDayTasksController,
+  getPlannedTasksController,
   getTaskController,
-  getTasksController,
   postTaskController,
   putTaskCompletedController,
   putTaskDueDateController,
@@ -33,7 +36,13 @@ router.post(
   postTaskController
 );
 
-router.get("/getTasks", isAuth, getTasksController);
+router.get("/getMyDayTasks", isAuth, getMyDayTasksController);
+
+router.get("/getImportantTasks", isAuth, getImportantTasksController);
+
+router.get("/getPlannedTasks", isAuth, getPlannedTasksController);
+
+router.get("/getInboxTasks", isAuth, getInboxTasksController);
 
 router.get("/getTask/:taskId", isAuth, getTaskController);
 
