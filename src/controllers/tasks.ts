@@ -15,6 +15,7 @@ export const postTaskController = async (
     const myDay = req.body.myDay;
     const listId = req.body.listId;
     const important = req.body.important;
+    console.log(req.body);
     console.log(dueDate);
     console.log(title);
     const task = new Task({
@@ -23,7 +24,10 @@ export const postTaskController = async (
       ...(listId && { listId }),
       important: important ? important : false,
       completed: false,
-      index: 1,
+      index: {
+        ...(myDay && { myDay: 1 }),
+        list: 1,
+      },
       userId: (<any>req).userId,
       ...(dueDate && { dueDate }),
     });
@@ -357,7 +361,7 @@ export const putTaskFilesController = async (
   }
 };
 
-export const putTaskIndexController = async (
+export const putTaskIndexMyDayController = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
@@ -376,7 +380,36 @@ export const putTaskIndexController = async (
       res.status(401);
       throw error;
     }
-    task.index = req.body.index;
+    task.index.myDay = req.body.index;
+    const result = await task.save();
+    res
+      .status(200)
+      .json({ message: "Task index successfully updated.", result });
+  } catch (err) {
+    catchError(err, res, next);
+  }
+};
+
+export const putTaskIndexListController = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    validateInput(req, res, next);
+    const taskId = req.params.taskId;
+    const task = await Task.findById(taskId);
+    if (!task) {
+      const error = new Error("Task not found.");
+      res.status(404);
+      throw error;
+    }
+    if (task.userId.toString() !== (<any>req).userId.toString()) {
+      const error = new Error("Unauthorized.");
+      res.status(401);
+      throw error;
+    }
+    task.index.list = req.body.index;
     const result = await task.save();
     res
       .status(200)

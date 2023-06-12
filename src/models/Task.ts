@@ -21,8 +21,12 @@ const taskSchema = new Schema(
       required: true,
     },
     index: {
-      type: Number,
-      required: true,
+      myDay: {
+        type: Number,
+      },
+      list: {
+        type: Number,
+      },
     },
     listId: {
       type: mongoose.Types.ObjectId,

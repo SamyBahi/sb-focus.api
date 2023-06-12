@@ -14,7 +14,8 @@ import {
   putTaskDueDateController,
   putTaskFilesController,
   putTaskImportantController,
-  putTaskIndexController,
+  putTaskIndexListController,
+  putTaskIndexMyDayController,
   putTaskListController,
   putTaskMyDayController,
   putTaskNoteController,
@@ -96,10 +97,17 @@ router.put(
 );
 
 router.put(
-  "/putTaskIndex/:taskId",
+  "/putTaskIndexMyDay/:taskId",
   isAuth,
-  [check("index").isInt()],
-  putTaskIndexController
+  [check("index").isNumeric()],
+  putTaskIndexMyDayController
+);
+
+router.put(
+  "/putTaskIndexList/:taskId",
+  isAuth,
+  [check("index").isNumeric()],
+  putTaskIndexListController
 );
 
 router.put(
