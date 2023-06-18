@@ -15,9 +15,6 @@ export const postTaskController = async (
     const myDay = req.body.myDay;
     const listId = req.body.listId;
     const important = req.body.important;
-    console.log(req.body);
-    console.log(dueDate);
-    console.log(title);
     const task = new Task({
       title,
       myDay: myDay ? myDay : false,
@@ -38,7 +35,7 @@ export const postTaskController = async (
   }
 };
 
-export const getMyDayTasksController = async (
+export const getAllTasksController = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
@@ -46,65 +43,10 @@ export const getMyDayTasksController = async (
   try {
     const tasks = await Task.find({
       userId: (<any>req).userId,
-      myDay: true,
     });
     res
       .status(200)
       .json({ message: "Successfully fetched myday tasks.", tasks });
-  } catch (err) {
-    catchError(err, res, next);
-  }
-};
-
-export const getImportantTasksController = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
-  try {
-    const tasks = await Task.find({
-      userId: (<any>req).userId,
-      important: true,
-    });
-    res
-      .status(200)
-      .json({ message: "Successfully fetched important tasks.", tasks });
-  } catch (err) {
-    catchError(err, res, next);
-  }
-};
-
-export const getPlannedTasksController = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
-  try {
-    const tasks = await Task.find({
-      userId: (<any>req).userId,
-      $or: [{ dueDate: { $exists: true } }, { dueDate: { $ne: null } }],
-    });
-    res
-      .status(200)
-      .json({ message: "Successfully fetched important tasks.", tasks });
-  } catch (err) {
-    catchError(err, res, next);
-  }
-};
-
-export const getInboxTasksController = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
-  try {
-    const tasks = await Task.find({
-      userId: (<any>req).userId,
-      $or: [{ listId: { $exists: false } }, { listId: null }],
-    });
-    res
-      .status(200)
-      .json({ message: "Successfully fetched important tasks.", tasks });
   } catch (err) {
     catchError(err, res, next);
   }
@@ -456,7 +398,6 @@ export const deleteTaskController = async (
   try {
     const taskId = req.params.taskId;
     const task = await Task.findById(taskId);
-    console.log(task);
     if (!task) {
       const error = new Error("Task not found.");
       res.status(404);

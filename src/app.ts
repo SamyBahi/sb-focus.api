@@ -33,7 +33,6 @@ app.use(
     res: express.Response,
     next: express.NextFunction
   ) => {
-    console.log(error);
     const message = error.message;
     return res.json({ message: message });
   }

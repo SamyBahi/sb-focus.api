@@ -16,17 +16,26 @@ router.post(
     check("email")
       .trim()
       .isEmail()
+      .withMessage("Please enter a valid E-mail.")
       .custom(async (value: any, { req: any }) => {
         const userDoc = await User.findOne({ email: value });
         if (userDoc) {
           return Promise.reject("E-mail already used.");
         }
       })
-      .withMessage("Please enter a valid E-mail.")
       .normalizeEmail(),
 
-    check("name").trim().notEmpty().isAlphanumeric(),
-    check("password").trim().notEmpty().isString().isLength({ min: 6 }),
+    check("name")
+      .trim()
+      .notEmpty()
+      .isAlphanumeric()
+      .withMessage("Please enter a valid name."),
+    check("password")
+      .trim()
+      .notEmpty()
+      .isString()
+      .isLength({ min: 6 })
+      .withMessage("Please enter a valid password."),
   ],
   signupController
 );

@@ -7,7 +7,6 @@ export const validateInput = (
   next: express.NextFunction
 ) => {
   const errors = validationResult(req);
-  console.log();
   if (!errors.isEmpty()) {
     const error = new Error("validation failed." + errors.array()[0].msg);
     res.status(422);

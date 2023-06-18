@@ -4,10 +4,7 @@ import { check } from "express-validator";
 
 import {
   deleteTaskController,
-  getImportantTasksController,
-  getInboxTasksController,
-  getMyDayTasksController,
-  getPlannedTasksController,
+  getAllTasksController,
   getTaskController,
   postTaskController,
   putTaskCompletedController,
@@ -37,13 +34,7 @@ router.post(
   postTaskController
 );
 
-router.get("/getMyDayTasks", isAuth, getMyDayTasksController);
-
-router.get("/getImportantTasks", isAuth, getImportantTasksController);
-
-router.get("/getPlannedTasks", isAuth, getPlannedTasksController);
-
-router.get("/getInboxTasks", isAuth, getInboxTasksController);
+router.get("/getAllTasks", isAuth, getAllTasksController);
 
 router.get("/getTask/:taskId", isAuth, getTaskController);
 
@@ -57,7 +48,7 @@ router.put(
 router.put(
   "/putTaskDueDate/:taskId",
   isAuth,
-  [check("dueDate").optional().isDate()],
+  [check("dueDate").optional({ nullable: true }).isDate()],
   putTaskDueDateController
 );
 
