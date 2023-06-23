@@ -274,35 +274,6 @@ export const putTaskListController = async (
   }
 };
 
-export const putTaskFilesController = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
-  try {
-    validateInput(req, res, next);
-    const taskId = req.params.taskId;
-    const task = await Task.findById(taskId);
-    if (!task) {
-      const error = new Error("Task not found.");
-      res.status(404);
-      throw error;
-    }
-    if (task.userId.toString() !== (<any>req).userId.toString()) {
-      const error = new Error("Unauthorized.");
-      res.status(401);
-      throw error;
-    }
-    task.files = req.body.files;
-    const result = await task.save();
-    res
-      .status(200)
-      .json({ message: "Task files successfully updated.", result });
-  } catch (err) {
-    catchError(err, res, next);
-  }
-};
-
 export const putTaskIndexMyDayController = async (
   req: express.Request,
   res: express.Response,

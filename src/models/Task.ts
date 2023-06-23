@@ -43,9 +43,6 @@ const taskSchema = new Schema(
     dueDate: {
       type: Date,
     },
-    files: {
-      type: [String],
-    },
     note: {
       type: String,
     },

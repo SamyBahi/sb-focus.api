@@ -9,7 +9,6 @@ import {
   postTaskController,
   putTaskCompletedController,
   putTaskDueDateController,
-  putTaskFilesController,
   putTaskImportantController,
   putTaskIndexListController,
   putTaskIndexMyDayController,
@@ -78,13 +77,6 @@ router.put(
   isAuth,
   [check("steps").isArray()],
   putTaskStepsController
-);
-
-router.put(
-  "/putTaskFiles/:taskId",
-  isAuth,
-  [check("files").isArray()],
-  putTaskFilesController
 );
 
 router.put(

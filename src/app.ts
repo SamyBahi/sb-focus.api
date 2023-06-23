@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 import authRoutes from "./routes/auth";
 import tasksRoutes from "./routes/tasks";
 import listsRoutes from "./routes/lists";
-import groupsRoutes from "./routes/group";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -23,7 +22,6 @@ app.use(cors({ origin: true, credentials: true }));
 app.use("/auth", authRoutes);
 app.use("/tasks", tasksRoutes);
 app.use("/lists", listsRoutes);
-app.use("/groups", groupsRoutes);
 
 //error
 app.use(

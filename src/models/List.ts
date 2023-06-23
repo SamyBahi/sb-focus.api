@@ -13,10 +13,6 @@ const listSchema = new Schema(
       ref: "User",
       required: true,
     },
-    groupId: {
-      type: mongoose.Types.ObjectId,
-      ref: "Group",
-    },
   },
   { timestamps: true }
 );
