@@ -2,6 +2,7 @@ import express from "express";
 import { catchError, validateInput } from "../utils/error";
 import Task from "../models/Task";
 import mongoose from "mongoose";
+import User from "../models/User";
 
 export const postTaskController = async (
   req: express.Request,
@@ -15,6 +16,15 @@ export const postTaskController = async (
     const myDay = req.body.myDay;
     const listId = req.body.listId;
     const important = req.body.important;
+    const user = await User.findById((<any>req).userId);
+    console.log(user);
+    if (!user) {
+      const error = new Error(
+        "User not found. You are not authorized to add a task to a user that doesn't exist."
+      );
+      res.status(401);
+      throw error;
+    }
     const task = new Task({
       title,
       myDay: myDay ? myDay : false,

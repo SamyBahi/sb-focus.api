@@ -1,0 +1,66 @@
+version: "3"
+services:
+  sbfocus-api:
+    container_name: sbfocus-api
+    build:
+      context: .
+      args:
+        - NODE_ENV=${NODE_ENV}
+        # - NGINX_URL=${NGINX_URL}
+    image: sbfocus-api:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+      PORT: ${PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      NODE_ENV: ${NODE_ENV}
+      # DATABASE_CLIENT: ${DATABASE_CLIENT}
+      # DATABASE_HOST: strapiDB
+      # DATABASE_PORT: ${DATABASE_PORT}
+      # DATABASE_NAME: ${DATABASE_NAME}
+      # DATABASE_USERNAME: ${DATABASE_USERNAME}
+      # DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      # JWT_SECRET: ${JWT_SECRET}
+      # ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      # APP_KEYS: ${APP_KEYS}
+      # NODE_ENV: ${NODE_ENV}
+      # NGINX_URL: ${NGINX_URL}
+    volumes:
+      - ./src:/opt/app/src
+      - ./package.json:/opt/app/package.json
+      - ./.env:/opt/app/.env
+    ports:
+      - "8080:8080"
+    networks:
+      - sbfocus
+    depends_on:
+      - sbfocus-db
+  
+  sbfocus-db:
+    container_name: sbfocus-db
+    image: mongo:6.0.8
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOTUSER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOTPASSWORD}
+      MONGODB_DATABASE: ${MONGODB_DATABASE}
+      MONGODB_USER: ${MONGODB_USER}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+    volumes:
+      - sbfocus-data:/data/db #using a volume
+      - ./mongo-entrypoint/:/docker-entrypoint-initdb.d/ #bind folder
+    ports:
+      - 27017:27017
+    networks:
+      - sbfocus
+
+volumes:
+  sbfocus-data:
+
+networks:
+  sbfocus:
+    name: sbfocus
+    driver: bridge
