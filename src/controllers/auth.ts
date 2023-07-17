@@ -51,6 +51,7 @@ export const loginController = async (
       { expiresIn: "1d" }
     );
     res.cookie("jwt", token, {
+      path: "/",
       httpOnly: true,
       secure: true,
       sameSite: "none", //strict
