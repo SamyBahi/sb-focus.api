@@ -33,7 +33,7 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - sbfocus
+      - sbc
     depends_on:
       - sbfocus-db
   
@@ -55,12 +55,12 @@ services:
     ports:
       - 27017:27017
     networks:
-      - sbfocus
+      - sbc
 
 volumes:
   sbfocus-data:
 
 networks:
   sbfocus:
-    name: sbfocus
+    name: sbc
     driver: bridge
