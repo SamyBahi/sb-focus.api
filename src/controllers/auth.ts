@@ -52,8 +52,8 @@ export const loginController = async (
     );
     res.cookie("jwt", token, {
       httpOnly: true,
-      //secure: false,
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none", //strict
       maxAge: 24 * 60 * 60 * 1000,
     });
     res.status(200).json({
