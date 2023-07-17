@@ -54,9 +54,7 @@ export const getAllTasksController = async (
     const tasks = await Task.find({
       userId: (<any>req).userId,
     });
-    res
-      .status(200)
-      .json({ message: "Successfully fetched myday tasks.", tasks });
+    res.status(200).json({ message: "Successfully fetched all tasks.", tasks });
   } catch (err) {
     catchError(err, res, next);
   }
