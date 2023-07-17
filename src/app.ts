@@ -11,6 +11,12 @@ import cors from "cors";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
+const corsOptions = {
+  origin: "http://localhost:5173", // Remplacez par l'URL de votre front-end local
+  methods: ["GET", "POST"], // Ajoutez les méthodes nécessaires
+  credentials: true, // Active la prise en charge des "credentials" (cookies)
+};
+
 const app = express();
 
 app.use(compression());
@@ -18,7 +24,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 //cors
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors(corsOptions));
 
 //routes
 app.use("/auth", authRoutes);
