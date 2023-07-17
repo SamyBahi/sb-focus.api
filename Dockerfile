@@ -3,15 +3,13 @@ FROM node:18-alpine as base
 RUN apk update && apk add --no-cache build-base gcc autoconf automake zlib-dev libpng-dev nasm bash vips-dev
 ARG NODE_ENV
 ENV NODE_ENV=${NODE_ENV}
-# ARG NGINX_URL
-# ENV NGINX_URL=${NGINX_URL}
 RUN env
 
 
 WORKDIR /opt/app
 COPY . .
 RUN if [ "${NODE_ENV}" = "development" ]; then \
-  # dev \
+  # dev 
   npm install \
   ; else \
   # prod
@@ -21,9 +19,10 @@ RUN if [ "${NODE_ENV}" = "development" ]; then \
 RUN if [ "${NODE_ENV}" = "production" ]; then \
   npm install -g typescript \
   ; fi
-# ENV PATH /opt/node_modules/.bin:$PATH
-# RUN chown -R node:node /opt/app
-#USER node
+
+RUN chown -R node:node /opt/app
+USER node
+
 RUN if [ "${NODE_ENV}" = "production" ]; then \
   npm run build \
   ; fi
