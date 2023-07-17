@@ -52,7 +52,7 @@ export const loginController = async (
     );
     res.cookie("jwt", token, {
       httpOnly: true,
-      secure: false,
+      //secure: false,
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
     });
