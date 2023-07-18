@@ -1,5 +1,5 @@
 {
-  "name": "smay-taskmanager-api",
+  "name": "sb-focus.api",
   "version": "1.0.0",
   "description": "The api of a full blown taskmanager inspired by Microsoft Todo",
   "main": "app.js",
