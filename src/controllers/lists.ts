@@ -81,7 +81,7 @@ export const deleteListController = async (
       throw error;
     }
     const result = await List.findByIdAndDelete(listId);
-    const result_tasks = Task.deleteMany({ listId: listId });
+    const result_tasks = await Task.deleteMany({ listId: listId });
     res
       .status(200)
       .json({ message: "Successfully deleted list.", result, result_tasks });
