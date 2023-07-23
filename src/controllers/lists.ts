@@ -1,6 +1,7 @@
 import express from "express";
 import { catchError, validateInput } from "../utils/error";
 import List from "../models/List";
+import Task from "../models/Task";
 
 export const postListController = async (
   req: express.Request,
@@ -80,7 +81,10 @@ export const deleteListController = async (
       throw error;
     }
     const result = await List.findByIdAndDelete(listId);
-    res.status(200).json({ message: "Successfully deleted list.", result });
+    const result_tasks = Task.deleteMany({ listId: listId });
+    res
+      .status(200)
+      .json({ message: "Successfully deleted list.", result, result_tasks });
   } catch (err) {
     catchError(err, res, next);
   }
